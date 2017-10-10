@@ -7,11 +7,23 @@
 #include "basis_set.h"
 extern "C" {
 #include <cint.h>
+int cint1e_ovlp_sph(double *buf, int *shls,
+                     int *atm, int natm, int *bas, int nbas, double *env);
+int cint1e_kin_sph(double *buf, int *shls,
+                     int *atm, int natm, int *bas, int nbas, double *env);
+int cint1e_nuc_sph(double *buf, int *shls,
+                     int *atm, int natm, int *bas, int nbas, double *env);
+
 }
 #define ENV_SIZE 10000
 #define MAXLINELENGTH 2000
 
 
+basis_set::~basis_set(){
+	delete[] atm;
+	delete[] bas;
+	delete[] env;
+}
 basis_set::basis_set(molecule & mol){
   char * filename=mol.get_basis_set();
   cout << "Reading basis:" << mol.get_basis_set() << endl;
@@ -40,6 +52,23 @@ basis_set::basis_set(molecule & mol){
   for ( int i=0;i<mol.natm;i++){
     read_basis_set_atom(filename, mol.atm_label[i], env, bas, i, &off, &n);
   }  
+  nbf=0;
+  lmax=0;
+  for ( int n=0;n<nbas;n++){
+	  if(lmax<bas[ANG_OF   + BAS_SLOTS * n])
+		  lmax=bas[ANG_OF   + BAS_SLOTS * n];
+  }
+  first_bf_of_shell=new int[nbas];
+  shells_on_atom=new int[natm*lmax];
+  for ( int n=0;n<nbas;n++){
+	  int l=bas[ANG_OF   + BAS_SLOTS * n];
+	  int a=bas[ATOM_OF  + BAS_SLOTS * n];
+	  first_bf_of_shell[n]=nbf;
+	  nbf+=2*l+1;
+  }
+
+
+
 }
 
 // reads in basis set data
@@ -140,7 +169,6 @@ int basis_set::read_basis_set_atom(char * filename, char * atm_label, double * e
   return(*n);
 }
 
-
 // converts "SPDFGHI" into 01234567
 int symlabel2ang(char s){
   char slabel[]="SPDFGHI";
@@ -149,11 +177,149 @@ int symlabel2ang(char s){
   }
 }
 
+double * basis_set::olap(){
+	int sh1,sh2;
+	int n1,n2;
+	int l1,l2;
+	double * olap=new double[nbf*nbf];
+	int shls[2];
+	for(sh1=0;sh1<nbas;sh1++){
+		n1=2*bas[ANG_OF   + BAS_SLOTS * sh1]+1;
+		for(sh2=sh1;sh2<nbas;sh2++){
+			n2=2*bas[ANG_OF+BAS_SLOTS*sh2]+1;
+			double * buf=new double[n1*n2];
+			shls[0]=sh1;
+			shls[1]=sh2;
+			cint1e_ovlp_sph(buf, shls, atm, natm, bas, nbas, env);
+			int i1,i2,j1,j2;
+			for(i1=first_bf_of_shell[sh1],j1=0;j1<n1;i1++,j1++){
+				for(i2=first_bf_of_shell[sh2],j2=0;j2<n2;i2++,j2++){
+					olap[i1*nbf+i2]=buf[j1*n2+j2];
+					olap[i2*nbf+i1]=buf[j1*n2+j2];
+				}
+			}
+			delete[] buf;
+		}
+	}
+	return(olap);
+}
+double * basis_set::kin(){
+	int sh1,sh2;
+	int n1,n2;
+	double * kin=new double[nbf*nbf];
+	int shls[2];
+	for(sh1=0;sh1<nbas;sh1++){
+		int l1=bas[ANG_OF   + BAS_SLOTS * sh1];
+		n1=2*l1+1;
+		for(sh2=sh1;sh2<nbas;sh2++){
+			int l2=bas[ANG_OF   + BAS_SLOTS * sh2];
+			n2=2*l2+1;
+			double * buf=new double[n1*n2];
+			shls[0]=sh1;
+			shls[1]=sh2;
+			cint1e_kin_sph(buf, shls, atm, natm, bas, nbas, env);
+			int i1,i2,j1,j2;
+			for(i1=first_bf_of_shell[sh1],j1=0;j1<n1;i1++,j1++){
+				for(i2=first_bf_of_shell[sh2],j2=0;j2<n2;i2++,j2++){
+					kin[i1*nbf+i2]=buf[j1*n2+j2];
+					kin[i2*nbf+i1]=buf[j1*n2+j2];
+				}
+			}
+			delete[] buf;
+		}
+	}
+	return(kin);
+}
+double * basis_set::nuc(){
+	int sh1,sh2;
+	int n1,n2;
+	double * nuc=new double[nbf*nbf];
+	int shls[2];
+	for(sh1=0;sh1<nbas;sh1++){
+		int l1=bas[ANG_OF   + BAS_SLOTS * sh1];
+		n1=2*l1+1;
+		for(sh2=sh1;sh2<nbas;sh2++){
+			int l2=bas[ANG_OF   + BAS_SLOTS * sh2];
+			n2=2*l2+1;
+			double * buf=new double[n1*n2];
+			shls[0]=sh1;
+			shls[1]=sh2;
+			cint1e_nuc_sph(buf, shls, atm, natm, bas, nbas, env);
+			int i1,i2,j1,j2;
+			for(i1=first_bf_of_shell[sh1],j1=0;j1<n1;i1++,j1++){
+				for(i2=first_bf_of_shell[sh2],j2=0;j2<n2;i2++,j2++){
+					nuc[i1*nbf+i2]=buf[j1*n2+j2];
+					nuc[i2*nbf+i1]=buf[j1*n2+j2];
+				}
+			}
+			delete[] buf;
+		}
+	}
+	return(nuc);
+}
+
+double * basis_set::teint(){
+	int sh1,sh2,sh3,sh4;
+	int n1,n2,n3,n4;
+	int nij=nbf*(nbf+1)/2;
+	int nijkl=nij*(nij+1)/2;
+	double * teint=new double[nijkl];
+	int shls[4];
+	for(sh1=0;sh1<nbas;sh1++){
+		n1=2*bas[ANG_OF   + BAS_SLOTS * sh1]+1;
+		for(sh2=sh1;sh2<nbas;sh2++){
+			n2=2*bas[ANG_OF   + BAS_SLOTS * sh2]+1;
+			for(sh3=1;sh3<nbas;sh3++){
+				n3=2*bas[ANG_OF   + BAS_SLOTS * sh3]+1;
+				for(sh4=sh3;sh4<nbas;sh4++){
+					n4=2*bas[ANG_OF   + BAS_SLOTS * sh4]+1;
+			        // this prescreens condition ij<kl
+			        int imax=first_bf_of_shell[sh1]+n1;
+			        int jmax=first_bf_of_shell[sh2]+n2;
+			        int ijmax=imax+jmax*(jmax-1)/2;
+			        int kmin=first_bf_of_shell[sh3];
+			        int lmin=first_bf_of_shell[sh4];
+			        int klmin=kmin+lmin*(lmin-1)/2;
+			        if(ijmax < klmin)continue;
+
+			        double * buf=new double[n1*n2*n3*n4];
+			        shls[0]=sh1;
+			        shls[1]=sh2;
+			        shls[2]=sh3;
+			        shls[3]=sh4;
+			        int ret=cint2e_sph(buf, shls, atm, natm, bas, nbas, env, NULL);
+			        if(ret==0)continue;
+			        int i1,i2,i3,i4,j1,j2,j3,j4;
+			        for(i1=first_bf_of_shell[sh1],j1=0;j1<n1;i1++,j1++){
+			        	for(i2=first_bf_of_shell[sh2],j2=0;j2<n2;i2++,j2++){
+			        		if(i1>i2)continue;
+			        		int ij=i1+i2*(i2-1)/2;
+				        	for(i3=first_bf_of_shell[sh3],j3=0;j3<n3;i3++,j3++){
+					        	for(i4=first_bf_of_shell[sh4],j4=0;j4<n4;i4++,j4++){
+					        		if(i3>i4)continue;
+					        		int kl=i3+i4*(i4-1)/2;
+					        		if(ij<kl)continue;
+					        		int ijkl=kl+ij*(ij-1)/2;
+					        		teint[ijkl]=buf[j1 + j2*n1 + j3*n1*n2 + j4*n1*n2*n3];
+					        	}//i4
+				        	}//i3
+			        	}//i2
+			        }//i1
+			    	delete[] buf;
+				}//sh4
+			}//sh3
+		}//sh2
+	}//sh1
+
+	return(teint);
+}
 
 
 ostream& operator<< (ostream &out, const basis_set & b){
   int i,j,n;
   out << "#natm=" << b.natm << endl;
+  out << "#nbf=" << b.nbf << endl;
+
   for(i=0;i<b.natm;i++){
     out << "#atm=" << i <<" "<< "Z=" << b.atm[CHARGE_OF + ATM_SLOTS * i] << endl;
     out << "#x=" << b.env[b.atm[PTR_COORD + ATM_SLOTS * i]+0] << endl;
@@ -171,5 +337,10 @@ ostream& operator<< (ostream &out, const basis_set & b){
 	   << b.env[b.bas[PTR_COEFF+ BAS_SLOTS * n]+j] << endl; 
     }    
   }
+
+
   return(out);
 }
+
+
+
