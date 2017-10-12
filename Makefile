@@ -21,19 +21,24 @@ FC = ifort2011
 TARGETS = xscf
 
 #.PHONY: clean
+	
+
+matrix.o: matrix.cc 
+	${CPP} -g -c $< -o $@
 
 molecule.o: molecule.cc
 	${CPP} -g -c $< -o $@
 
+
 basis_set.o: basis_set.cc
-	${CPP} -g -c $< -o $@ -I/usr/local/include/
+	${CPP} -g -c $< -o $@ -I/usr/local/include/ -I/usr/include/
 
 
 xscf.o: xscf.cc
 	${CPP} -g -c $< -o $@ -I/usr/local/include/
 
-xscf: xscf.o molecule.o basis_set.o 
-	${CPP} -g  $^ -o $@  -L/usr/local/lib -lcint
+xscf: xscf.o molecule.o basis_set.o matrix.o
+	${CPP} -g  $^ -o $@  -L/usr/local/lib -lcint -lblas -llapack
 
 all: ${TARGETS}
 

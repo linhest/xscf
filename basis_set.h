@@ -3,10 +3,13 @@ public:
   basis_set(molecule & mol);
   ~basis_set();
   friend ostream& operator<< (ostream &out, const basis_set &b);
-  double * olap();
-  double * kin();
-  double * nuc();
-  double * teint();
+
+  double * teint;
+  double * kin;
+  double * olap;
+  double * nuc;
+  double * olap_inv_sqrt;
+
 
   int natm;
   int nbas;
@@ -18,9 +21,13 @@ public:
   int nbf;
   int lmax;
 private:
-  int read_basis_set_atom_nshell(char * filename, char * atm_label);
   int read_basis_set_atom(char * filename, char * atm_label, double * env, int * bas, int atom_of, int *off, int *n);
 
+  double * calc_olap();
+  double * calc_kin();
+  double * calc_nuc();
+  double * calc_teint();
+  double * inv_sqrt(double * M);
 
 };
 

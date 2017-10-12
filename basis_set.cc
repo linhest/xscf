@@ -2,9 +2,13 @@
 #include <fstream>
 #include <sstream>
 #include <cstring>
+#include <cmath>
 
+#include "matrix.h"
 #include "molecule.h"
 #include "basis_set.h"
+using namespace std;
+
 extern "C" {
 #include <cint.h>
 int cint1e_ovlp_sph(double *buf, int *shls,
@@ -26,8 +30,6 @@ basis_set::~basis_set(){
 }
 basis_set::basis_set(molecule & mol){
   char * filename=mol.get_basis_set();
-  cout << "Reading basis:" << mol.get_basis_set() << endl;
-
   int off = PTR_ENV_START; // = 20
   int n=0;
   for ( int i=0;i<mol.natm;i++){
@@ -68,7 +70,11 @@ basis_set::basis_set(molecule & mol){
   }
 
 
-
+  olap=calc_olap();
+  kin=calc_kin();
+  nuc=calc_nuc();
+  teint=calc_teint();
+  olap_inv_sqrt=inv_sqrt(olap);
 }
 
 // reads in basis set data
@@ -177,7 +183,7 @@ int symlabel2ang(char s){
   }
 }
 
-double * basis_set::olap(){
+double * basis_set::calc_olap(){
 	int sh1,sh2;
 	int n1,n2;
 	int l1,l2;
@@ -203,7 +209,7 @@ double * basis_set::olap(){
 	}
 	return(olap);
 }
-double * basis_set::kin(){
+double * basis_set::calc_kin(){
 	int sh1,sh2;
 	int n1,n2;
 	double * kin=new double[nbf*nbf];
@@ -230,7 +236,7 @@ double * basis_set::kin(){
 	}
 	return(kin);
 }
-double * basis_set::nuc(){
+double * basis_set::calc_nuc(){
 	int sh1,sh2;
 	int n1,n2;
 	double * nuc=new double[nbf*nbf];
@@ -257,8 +263,7 @@ double * basis_set::nuc(){
 	}
 	return(nuc);
 }
-
-double * basis_set::teint(){
+double * basis_set::calc_teint(){
 	int sh1,sh2,sh3,sh4;
 	int n1,n2,n3,n4;
 	int nij=nbf*(nbf+1)/2;
@@ -314,6 +319,28 @@ double * basis_set::teint(){
 	return(teint);
 }
 
+double * basis_set::inv_sqrt(double * M){
+	double * V=new double[nbf*nbf];
+	double * M2=new double[nbf*nbf];
+
+	double * eval=new double[nbf];
+	memcpy(V,M,nbf*nbf*sizeof(double));
+	int r=eigval(V, eval, nbf);
+
+
+	for(int i=0;i<nbf;i++){
+		cout << i<<" " << eval[i] << endl;
+
+		for(int j=0;j<nbf;j++){
+
+			M2[i*nbf+j]=0.;
+			for(int k=0;k<nbf;k++){
+				M2[i*nbf+j]+=V[k*nbf+i]*1/sqrt(eval[k])*V[k*nbf+j];
+			}
+		}
+	}
+	return(M2);
+}
 
 ostream& operator<< (ostream &out, const basis_set & b){
   int i,j,n;
