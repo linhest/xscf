@@ -13,11 +13,10 @@ extern const char  atom_labels[][4];
 
 #define MAXLINELENGTH 2000
 molecule::molecule(char filename[]){
-  cout << "# reading file:" << filename << endl;
   ifstream fin;
   fin.open(filename);
   if(!fin.good()) {
-    cerr << "File not found "<< filename << endl;
+	  throw std::invalid_argument( strcat(filename," not found ") );
   }
   while(!fin.eof()){
     char buf[MAXLINELENGTH];
@@ -50,6 +49,9 @@ molecule::molecule(char filename[]){
       strncpy(basis_set,token2,LEN_BASIS_SET);
     }else if(strcasecmp(token,"exlevels")==0){
       exlevels=parse_int(token2);
+    }else if(strcasecmp(token,"occ")==0){
+      occ=new unsigned int[nmo];
+      parse_int_array_fixed_len(occ,nmo,token2,',');
     }else if(strcasecmp(token,"charge")==0){
       charge=parse_int(token2);
     }else if(strcasecmp(token,"sym")==0){

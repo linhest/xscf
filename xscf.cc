@@ -1,10 +1,21 @@
 #include <iostream>
 #include "molecule.h"
 #include "basis_set.h"
+#include "scf.h"
 
 using namespace std;
 int main(int argc, char ** argv){
-  molecule mol(argv[1]);
+	char * input_filename;
+	char  default_input_filename[]= "input.txt";
+	if(argc==1){
+	//	 throw std::invalid_argument( "please provide input file!" );
+		cout << default_input_filename << endl;
+		input_filename=default_input_filename;
+	}else{
+		input_filename=argv[1];
+
+	}
+  molecule mol(input_filename);
   cout << "test" << endl;
   cout << mol;
   basis_set basis(mol);
@@ -44,11 +55,9 @@ int main(int argc, char ** argv){
   }
 
 
-  double * h0 =new double[basis.nbf*basis.nbf];
-  for(int i=0;i<basis.nbf*basis.nbf;i++){
-	  h0[i]=basis.kin[i]+basis.nuc[i];
-  }
+  cout << "end " << endl;
 
-  delete[] h0;
+  scf S(mol,basis);
 
+ cout << "end " << endl;
 }

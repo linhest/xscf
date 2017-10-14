@@ -20,13 +20,18 @@ FC = ifort2011
 
 TARGETS = xscf
 
-#.PHONY: clean
-	
+all: ${TARGETS}
+
+
+.PHONY: clean
 
 matrix.o: matrix.cc 
 	${CPP} -g -c $< -o $@
 
 molecule.o: molecule.cc
+	${CPP} -g -c $< -o $@
+
+scf.o: scf.cc
 	${CPP} -g -c $< -o $@
 
 
@@ -37,52 +42,10 @@ basis_set.o: basis_set.cc
 xscf.o: xscf.cc
 	${CPP} -g -c $< -o $@ -I/usr/local/include/
 
-xscf: xscf.o molecule.o basis_set.o matrix.o
+xscf: xscf.o molecule.o basis_set.o matrix.o scf.o
 	${CPP} -g  $^ -o $@  -L/usr/local/lib -lcint -lblas -llapack
 
-all: ${TARGETS}
 
-# constants.o: constants.f90
-# 	${FC} -c $< -o $@
-
-# anglib.o: anglib.f90
-# 	${FC} -c $< -o $@
-
-# angularintegration.o: angularintegration.f90
-# 	${FC} -c $< -o $@
-
-# readpsi3.o: readpsi3.cc types.h
-# 	${CPP} ${CFLAGS} ${PSICFLAGS} -c  $< -o $@ 
-
-# %.o: %.c %.h types.h
-# 	${CC} ${CFLAGS} -o $@ -c $<
-
-# csf_ci: csf_ci.o hamiltonian-spincsf.o occ.o det.o hamiltonian-det.o readmointegrals.o mointegrals.o  densitymatrix.o naturalorbitals.o
-# 	${CPP}  -o $@ $^ ${LDFLAGS} 
-
-# csf_ci_psi3: csf_ci_psi3.o hamiltonian-spincsf.o occ.o det.o hamiltonian-det.o readpsi3.o mointegrals.o 
-# 	${CPP}  -o $@ $^ ${LDFLAGS} ${PSILDFLAGS} 
-
-# print_naturalorbitals: print_naturalorbitals.o naturalorbitals.o densitymatrix.o 
-# 	${CPP}  -o $@ $^ ${LDFLAGS} ${PSILDFLAGS} 
-
-# ionization_coef: ionization_coef.o 
-# 	${CPP}  -o $@ $^ ${LDFLAGS} ${PSILDFLAGS} 
-
-# #auger_coef: auger_coef.o 
-# #	${CPP}  -o $@ $^ ${LDFLAGS} ${PSILDFLAGS} 
-
-# auger_coef_psi3: auger_coef_psi3.o readpsi3.o angularintegration.o constants.o anglib.o
-# 	${CPP}  -o $@ $^ -lgfortran ${LDFLAGS} ${PSILDFLAGS} 
-
-# orbital_coef: orbital_coef.o readpsi3.o 
-# 	${CPP}  -o $@ $^ ${LDFLAGS} ${PSILDFLAGS} 
-
-# overlap_states: overlap_states.o readpsi3.o 
-# 	${CPP}  -o $@ $^ ${LDFLAGS} ${PSILDFLAGS} 
-
-# map_to_min_basis: map_to_min_basis.o readpsi3.o
-# 	${CPP}  -o $@ $^ ${LDFLAGS} ${PSILDFLAGS} 
 
 clean:	
 	rm *.o 

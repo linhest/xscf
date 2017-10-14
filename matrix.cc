@@ -7,8 +7,10 @@ int dsyev_(char *jobz, char *uplo, int *n, double *a,
 	 int *lda, double *w, double *work, int *lwork,
 	int *info);
 
+
 }
 using namespace std;
+
 
 
 int eigval(double * a, double * eval, int m){
@@ -27,12 +29,12 @@ int eigval(double * a, double * eval, int m){
 	delete[] work;
 	if(info<0){
 		char text[100];
-		sprintf(text,"argument %ld",-info);
+		sprintf(text,"argument %d",-info);
 		throw std::invalid_argument( text );
 		printf("%s\n",text);
 	}else if(info>0){
 		char text[100];
-		sprintf(text,"convergence %ld",info);
+		sprintf(text,"convergence %d",info);
 		throw std::invalid_argument( text );
 	}
 	return((int)info);

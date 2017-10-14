@@ -23,6 +23,7 @@ class molecule {
   int nelec;
   int charge; // total charge
 
+  unsigned int * occ; // occupation of MOs
  private:
   void read_basis();
   int parse_int(char * string);
