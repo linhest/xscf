@@ -43,7 +43,7 @@ xscf.o: xscf.cc
 	${CPP} -g -c $< -o $@ -I/usr/local/include/
 
 xscf: xscf.o molecule.o basis_set.o matrix.o scf.o
-	${CPP} -g  $^ -o $@  -L/usr/local/lib -lcint -lblas -llapack
+	${CPP} -g  $^ -o $@  -L/usr/local/lib -lcint -llapack -lblas
 
 
 

@@ -7,7 +7,7 @@ class scf {
 
  private:
   int print_iteration();
-
+  int construct_dmat(double  * dmat, double * c, const unsigned int * occ );
   const molecule & mol;
   const basis_set & b;
   double energy;

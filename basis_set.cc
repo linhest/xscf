@@ -18,6 +18,11 @@ int cint1e_kin_sph(double *buf, int *shls, int *atm, int natm, int *bas,
 int cint1e_nuc_sph(double *buf, int *shls, int *atm, int natm, int *bas,
 		int nbas, double *env);
 
+ int dgemm_(char *transa, char *transb, int *m, int * n, int *k, double *alpha, double *a, int *lda,
+ 	double *b, int *ldb, double *beta, double *c, int *ldc);
+ int dgemv_(char *trans, int *m, int *n, double *
+ 	alpha, double *a, int *lda, double *x, int *incx,
+ 	double *beta, double *y, int *incy);
 }
 #define ENV_SIZE 10000
 #define MAXLINELENGTH 2000
@@ -349,16 +354,42 @@ double * basis_set::inv_sqrt(double * M) {
 	double * eval = new double[nbf];
 	memcpy(V, M, nbf * nbf * sizeof(double));
 	int r = eigval(V, eval, nbf);
+/*
+	double * t1 = new double[nbf * nbf];
+	double * t2 = new double[nbf * nbf];
+
+	char transa='N';
+	char transb='N';
+	double alpha=1, beta=0.;
+	dgemm_(&transa,&transb,&nbf,&nbf,&nbf,&alpha,M,&nbf,V,&nbf,&beta,t1,&nbf);//t1=M*V
+	transa='T';
+	transb='N';
+	dgemm_(&transa,&transb,&nbf,&nbf,&nbf,&alpha,V,&nbf,t1,&nbf,&beta,t2,&nbf);//t2=V^t*t1
+
+	cout << "T2" << endl;
+	for(int i=0;i<nbf;i++){
+		for(int j=0;j<nbf;j++){
+			printf("%f ",t2[i*nbf+j]);
+		}
+		printf("\n");
+	}
+
+	transa='T';
+	transb='N';
+	int inc=1;
+	for(int i=0;i<nbf;i++){
+		dgemv_(&transa,&nbf,&nbf,&alpha,M,&nbf,&V[i*nbf],&inc,&beta,t1,&inc);//t1=M*V
+		for(int j=0;j<nbf;j++){
+			printf("%f %f \n",eval[i]*V[i*nbf+j],t1[j]);
+		}
+	}
+*/
 
 	for (int i = 0; i < nbf; i++) {
-		cout << i << " " << eval[i] << endl;
-
 		for (int j = 0; j < nbf; j++) {
-
 			M2[i * nbf + j] = 0.;
 			for (int k = 0; k < nbf; k++) {
-				M2[i * nbf + j] += V[k * nbf + i] * 1 / sqrt(eval[k])
-						* V[k * nbf + j];
+				M2[i * nbf + j] += V[k * nbf + i] * V[k * nbf + j]/ sqrt(eval[k]);
 			}
 		}
 	}
