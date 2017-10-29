@@ -21,7 +21,7 @@ int main(int argc, char ** argv){
   basis_set basis(mol);
   cout << basis << endl;
 
-  cout << "#Overlap Matrix:" << endl;
+  /*  cout << "#Overlap Matrix:" << endl;
   for(int i=0;i<basis.nbf;i++){
 	  for(int j=0;j<basis.nbf;j++){
 		  cout << basis.olap[i*basis.nbf+j]<< " ";
@@ -54,10 +54,9 @@ int main(int argc, char ** argv){
 	  cout << endl;
   }
 
-
   cout << "end " << endl;
+  */
 
   scf S(mol,basis);
 
- cout << "end " << endl;
 }

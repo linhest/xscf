@@ -148,7 +148,6 @@ molecule::molecule(char filename[]){
 
 molecule::~molecule(){
   delete[] refs;
-  cout << "refs freed" << endl;
 }
 
 ostream& operator<< (ostream &out, const molecule & mol){

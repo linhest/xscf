@@ -3,7 +3,8 @@ public:
   basis_set(molecule & mol);
   ~basis_set();
   friend ostream& operator<< (ostream &out, const basis_set &b);
-
+  int packed_index(int i,int j) const;
+  
   double * teint;
   double * kin;
   double * olap;
@@ -29,6 +30,8 @@ private:
   double * calc_teint();
   double * inv_sqrt(double * M);
 
+
+  
 };
 
 int symlabel2ang(char s);

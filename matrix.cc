@@ -50,20 +50,12 @@ double norm(double *C,double *S,int n){
 
 
 
-void mmult(double *a,double *b,double *c,int n){
-/*	int i,j,k;
-	for(i=0;i<n;i++){
-		for(j=0;j<n;j++){
-			c[i*n+j]=0.;
-			for(k=0;k<n;k++){
-				c[i*n+j]+=a[i*n+k]*b[k*n+j];
-			}
-		}
-	}*/
+// a is rewritten as c=a b
+void mmult(double *a,double *b,double * c,int n){
 	char transa='N';
 	char transb='N';
 	double alpha=1, beta=0.;
-	dgemm_(&transa,&transb,&n,&n,&n,&alpha,a,&n,b,&n,&beta,c,&n);
+	dgemm_(&transa,&transb,&n,&n,&n,&alpha,a,&n,b,&n,&beta,c,&n);//c=a*b
 }
 
 

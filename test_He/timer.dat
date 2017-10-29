@@ -1,0 +1,324 @@
+
+Host: ludger-InfinityBook13V3
+
+Timers On : Sun Oct 29 09:48:33 2017
+Timers Off: Sun Oct 29 09:48:34 2017
+
+Wall Time:        1.00 seconds
+
+JK: (A|mn)  :       0.00u       0.00s       0.00w      1 call
+JK: (A|Q)^-1/2:       0.01u       0.00s       0.00w      1 call
+JK: (Q|mn)  :       0.00u       0.00s       0.00w      1 call
+Form H      :       0.00u       0.00s       0.00w      1 call
+Form S/X    :       0.00u       0.00s       0.00w      1 call
+Guess       :       0.00u       0.00s       0.00w      1 call
+Form G      :       0.00u       0.00s       0.00w      4 calls
+JK: D       :       0.00u       0.00s       0.00w      4 calls
+JK: USO2AO  :       0.00u       0.00s       0.00w      4 calls
+JK: JK      :       0.00u       0.00s       0.00w      4 calls
+JK: J       :       0.00u       0.00s       0.00w      4 calls
+JK: J1      :       0.00u       0.00s       0.00w      4 calls
+JK: J2      :       0.00u       0.00s       0.00w      4 calls
+JK: K       :       0.00u       0.00s       0.00w      4 calls
+JK: K1      :       0.00u       0.00s       0.00w      4 calls
+JK: K2      :       0.00u       0.00s       0.00w      4 calls
+JK: AO2USO  :       0.00u       0.00s       0.00w      4 calls
+Form F      :       0.00u       0.00s       0.00w      4 calls
+DIIS        :       0.00u       0.00s       0.00w      4 calls
+DIISManager::add_entry:       0.00u       0.00s       0.00w      4 calls
+Form C      :       0.00u       0.00s       0.00w      4 calls
+Form D      :       0.00u       0.00s       0.00w      4 calls
+DIISManager::extrapolate:       0.00u       0.00s       0.00w      3 calls
+DIISManager::extrapolate: bMatrix setup:       0.00u       0.00s       0.00w      3 calls
+DIISManager::extrapolate: bMatrix pseudoinverse:       0.00u       0.00s       0.00w      3 calls
+DIISManager::extrapolate: form new data:       0.00u       0.00s       0.00w      3 calls
+
+***********************************************************
+
+Host: ludger-InfinityBook13V3
+
+Timers On : Sun Oct 29 10:00:15 2017
+Timers Off: Sun Oct 29 10:00:16 2017
+
+Wall Time:        1.00 seconds
+
+JK: (A|mn)  :       0.00u       0.00s       0.00w      1 call
+JK: (A|Q)^-1/2:       0.01u       0.00s       0.00w      1 call
+JK: (Q|mn)  :       0.00u       0.00s       0.00w      1 call
+Form H      :       0.00u       0.00s       0.00w      1 call
+Form S/X    :       0.00u       0.00s       0.00w      1 call
+Guess       :       0.00u       0.00s       0.00w      1 call
+Form G      :       0.00u       0.00s       0.00w      4 calls
+JK: D       :       0.00u       0.00s       0.00w      4 calls
+JK: USO2AO  :       0.00u       0.00s       0.00w      4 calls
+JK: JK      :       0.00u       0.00s       0.00w      4 calls
+JK: J       :       0.00u       0.00s       0.00w      4 calls
+JK: J1      :       0.00u       0.00s       0.00w      4 calls
+JK: J2      :       0.00u       0.00s       0.00w      4 calls
+JK: K       :       0.00u       0.00s       0.00w      4 calls
+JK: K1      :       0.00u       0.00s       0.00w      4 calls
+JK: K2      :       0.00u       0.00s       0.00w      4 calls
+JK: AO2USO  :       0.00u       0.00s       0.00w      4 calls
+Form F      :       0.00u       0.00s       0.00w      4 calls
+DIIS        :       0.00u       0.00s       0.00w      4 calls
+DIISManager::add_entry:       0.00u       0.00s       0.00w      4 calls
+Form C      :       0.00u       0.00s       0.00w      4 calls
+Form D      :       0.00u       0.00s       0.00w      4 calls
+DIISManager::extrapolate:       0.00u       0.00s       0.00w      3 calls
+DIISManager::extrapolate: bMatrix setup:       0.00u       0.00s       0.00w      3 calls
+DIISManager::extrapolate: bMatrix pseudoinverse:       0.00u       0.00s       0.00w      3 calls
+DIISManager::extrapolate: form new data:       0.00u       0.00s       0.00w      3 calls
+
+***********************************************************
+
+Host: ludger-InfinityBook13V3
+
+Timers On : Sun Oct 29 10:15:40 2017
+Timers Off: Sun Oct 29 10:15:40 2017
+
+Wall Time:        0.00 seconds
+
+JK: (A|mn)  :       0.00u       0.00s       0.00w      1 call
+JK: (A|Q)^-1/2:       0.01u       0.00s       0.00w      1 call
+JK: (Q|mn)  :       0.00u       0.00s       0.00w      1 call
+Form H      :       0.00u       0.00s       0.00w      1 call
+Form S/X    :       0.00u       0.00s       0.00w      1 call
+Guess       :       0.00u       0.00s       0.00w      1 call
+Form G      :       0.00u       0.00s       0.00w      4 calls
+JK: D       :       0.00u       0.00s       0.00w      4 calls
+JK: USO2AO  :       0.00u       0.00s       0.00w      4 calls
+JK: JK      :       0.00u       0.00s       0.00w      4 calls
+JK: J       :       0.00u       0.00s       0.00w      4 calls
+JK: J1      :       0.00u       0.00s       0.00w      4 calls
+JK: J2      :       0.00u       0.00s       0.00w      4 calls
+JK: K       :       0.00u       0.00s       0.00w      4 calls
+JK: K1      :       0.00u       0.00s       0.00w      4 calls
+JK: K2      :       0.00u       0.00s       0.00w      4 calls
+JK: AO2USO  :       0.00u       0.00s       0.00w      4 calls
+Form F      :       0.00u       0.00s       0.00w      4 calls
+DIIS        :       0.00u       0.00s       0.00w      4 calls
+DIISManager::add_entry:       0.00u       0.00s       0.00w      4 calls
+Form C      :       0.00u       0.00s       0.00w      4 calls
+Form D      :       0.00u       0.00s       0.00w      4 calls
+DIISManager::extrapolate:       0.00u       0.00s       0.00w      3 calls
+DIISManager::extrapolate: bMatrix setup:       0.00u       0.00s       0.00w      3 calls
+DIISManager::extrapolate: bMatrix pseudoinverse:       0.00u       0.00s       0.00w      3 calls
+DIISManager::extrapolate: form new data:       0.00u       0.00s       0.00w      3 calls
+
+***********************************************************
+
+Host: ludger-InfinityBook13V3
+
+Timers On : Sun Oct 29 10:19:41 2017
+Timers Off: Sun Oct 29 10:19:42 2017
+
+Wall Time:        1.00 seconds
+
+JK: (A|mn)  :       0.00u       0.00s       0.00w      1 call
+JK: (A|Q)^-1/2:       0.01u       0.00s       0.00w      1 call
+JK: (Q|mn)  :       0.00u       0.00s       0.00w      1 call
+Form H      :       0.00u       0.00s       0.00w      1 call
+Form S/X    :       0.00u       0.00s       0.00w      1 call
+Guess       :       0.00u       0.01s       0.00w      1 call
+Form G      :       0.00u       0.00s       0.00w      4 calls
+JK: D       :       0.00u       0.00s       0.00w      4 calls
+JK: USO2AO  :       0.00u       0.00s       0.00w      4 calls
+JK: JK      :       0.00u       0.00s       0.00w      4 calls
+JK: J       :       0.00u       0.00s       0.00w      4 calls
+JK: J1      :       0.00u       0.00s       0.00w      4 calls
+JK: J2      :       0.00u       0.00s       0.00w      4 calls
+JK: K       :       0.00u       0.00s       0.00w      4 calls
+JK: K1      :       0.00u       0.00s       0.00w      4 calls
+JK: K2      :       0.00u       0.00s       0.00w      4 calls
+JK: AO2USO  :       0.00u       0.00s       0.00w      4 calls
+Form F      :       0.00u       0.00s       0.00w      4 calls
+DIIS        :       0.00u       0.00s       0.00w      4 calls
+DIISManager::add_entry:       0.00u       0.00s       0.00w      4 calls
+Form C      :       0.00u       0.00s       0.00w      4 calls
+Form D      :       0.00u       0.00s       0.00w      4 calls
+DIISManager::extrapolate:       0.00u       0.00s       0.00w      3 calls
+DIISManager::extrapolate: bMatrix setup:       0.00u       0.00s       0.00w      3 calls
+DIISManager::extrapolate: bMatrix pseudoinverse:       0.00u       0.00s       0.00w      3 calls
+DIISManager::extrapolate: form new data:       0.00u       0.00s       0.00w      3 calls
+
+***********************************************************
+
+Host: ludger-InfinityBook13V3
+
+Timers On : Sun Oct 29 10:32:34 2017
+Timers Off: Sun Oct 29 10:32:35 2017
+
+Wall Time:        1.00 seconds
+
+JK: (A|mn)  :       0.00u       0.00s       0.00w      1 call
+JK: (A|Q)^-1/2:       0.00u       0.00s       1.00w      1 call
+JK: (Q|mn)  :       0.00u       0.00s       0.00w      1 call
+Form H      :       0.00u       0.00s       0.00w      1 call
+Form S/X    :       0.00u       0.00s       0.00w      1 call
+Guess       :       0.00u       0.00s       0.00w      1 call
+Form G      :       0.00u       0.00s       0.00w      4 calls
+JK: D       :       0.00u       0.00s       0.00w      4 calls
+JK: USO2AO  :       0.00u       0.00s       0.00w      4 calls
+JK: JK      :       0.00u       0.00s       0.00w      4 calls
+JK: J       :       0.00u       0.00s       0.00w      4 calls
+JK: J1      :       0.00u       0.00s       0.00w      4 calls
+JK: J2      :       0.00u       0.00s       0.00w      4 calls
+JK: K       :       0.00u       0.00s       0.00w      4 calls
+JK: K1      :       0.00u       0.00s       0.00w      4 calls
+JK: K2      :       0.00u       0.00s       0.00w      4 calls
+JK: AO2USO  :       0.00u       0.00s       0.00w      4 calls
+Form F      :       0.00u       0.00s       0.00w      4 calls
+DIIS        :       0.00u       0.00s       0.00w      4 calls
+DIISManager::add_entry:       0.00u       0.00s       0.00w      4 calls
+Form C      :       0.00u       0.00s       0.00w      4 calls
+Form D      :       0.00u       0.00s       0.00w      4 calls
+DIISManager::extrapolate:       0.00u       0.00s       0.00w      3 calls
+DIISManager::extrapolate: bMatrix setup:       0.00u       0.00s       0.00w      3 calls
+DIISManager::extrapolate: bMatrix pseudoinverse:       0.00u       0.00s       0.00w      3 calls
+DIISManager::extrapolate: form new data:       0.00u       0.00s       0.00w      3 calls
+
+***********************************************************
+
+Host: ludger-InfinityBook13V3
+
+Timers On : Sun Oct 29 11:52:41 2017
+Timers Off: Sun Oct 29 11:52:41 2017
+
+Wall Time:        0.00 seconds
+
+JK: (A|mn)  :       0.00u       0.00s       0.00w      1 call
+JK: (A|Q)^-1/2:       0.01u       0.00s       0.00w      1 call
+JK: (Q|mn)  :       0.00u       0.00s       0.00w      1 call
+Form H      :       0.00u       0.00s       0.00w      1 call
+Form S/X    :       0.00u       0.00s       0.00w      1 call
+Guess       :       0.00u       0.01s       0.00w      1 call
+Form G      :       0.00u       0.00s       0.00w      5 calls
+JK: D       :       0.00u       0.00s       0.00w      5 calls
+JK: USO2AO  :       0.00u       0.00s       0.00w      5 calls
+JK: JK      :       0.00u       0.00s       0.00w      5 calls
+JK: J       :       0.00u       0.00s       0.00w      5 calls
+JK: J1      :       0.00u       0.00s       0.00w      5 calls
+JK: J2      :       0.00u       0.00s       0.00w      5 calls
+JK: K       :       0.00u       0.00s       0.00w      5 calls
+JK: K1      :       0.00u       0.00s       0.00w      5 calls
+JK: K2      :       0.00u       0.00s       0.00w      5 calls
+JK: AO2USO  :       0.00u       0.00s       0.00w      5 calls
+Form F      :       0.00u       0.00s       0.00w      5 calls
+DIIS        :       0.00u       0.00s       0.00w      5 calls
+DIISManager::add_entry:       0.00u       0.00s       0.00w      5 calls
+Form C      :       0.00u       0.00s       0.00w      5 calls
+Form D      :       0.00u       0.00s       0.00w      5 calls
+DIISManager::extrapolate:       0.00u       0.00s       0.00w      4 calls
+DIISManager::extrapolate: bMatrix setup:       0.00u       0.00s       0.00w      4 calls
+DIISManager::extrapolate: bMatrix pseudoinverse:       0.00u       0.00s       0.00w      4 calls
+DIISManager::extrapolate: form new data:       0.00u       0.00s       0.00w      4 calls
+
+***********************************************************
+
+Host: ludger-InfinityBook13V3
+
+Timers On : Sun Oct 29 11:52:52 2017
+Timers Off: Sun Oct 29 11:52:52 2017
+
+Wall Time:        0.00 seconds
+
+JK: (A|mn)  :       0.00u       0.00s       0.00w      1 call
+JK: (A|Q)^-1/2:       0.01u       0.00s       0.00w      1 call
+JK: (Q|mn)  :       0.00u       0.00s       0.00w      1 call
+Form H      :       0.00u       0.00s       0.00w      1 call
+Form S/X    :       0.00u       0.00s       0.00w      1 call
+Guess       :       0.00u       0.00s       0.00w      1 call
+Form G      :       0.00u       0.00s       0.00w      5 calls
+JK: D       :       0.00u       0.00s       0.00w      5 calls
+JK: USO2AO  :       0.00u       0.00s       0.00w      5 calls
+JK: JK      :       0.00u       0.00s       0.00w      5 calls
+JK: J       :       0.00u       0.00s       0.00w      5 calls
+JK: J1      :       0.00u       0.00s       0.00w      5 calls
+JK: J2      :       0.00u       0.00s       0.00w      5 calls
+JK: K       :       0.00u       0.00s       0.00w      5 calls
+JK: K1      :       0.00u       0.00s       0.00w      5 calls
+JK: K2      :       0.00u       0.00s       0.00w      5 calls
+JK: AO2USO  :       0.00u       0.00s       0.00w      5 calls
+Form F      :       0.00u       0.00s       0.00w      5 calls
+DIIS        :       0.00u       0.00s       0.00w      5 calls
+DIISManager::add_entry:       0.00u       0.00s       0.00w      5 calls
+Form C      :       0.00u       0.00s       0.00w      5 calls
+Form D      :       0.00u       0.00s       0.00w      5 calls
+DIISManager::extrapolate:       0.00u       0.00s       0.00w      4 calls
+DIISManager::extrapolate: bMatrix setup:       0.00u       0.00s       0.00w      4 calls
+DIISManager::extrapolate: bMatrix pseudoinverse:       0.00u       0.00s       0.00w      4 calls
+DIISManager::extrapolate: form new data:       0.00u       0.00s       0.00w      4 calls
+
+***********************************************************
+
+Host: ludger-InfinityBook13V3
+
+Timers On : Sun Oct 29 12:24:41 2017
+Timers Off: Sun Oct 29 12:24:41 2017
+
+Wall Time:        0.00 seconds
+
+JK: (A|mn)  :       0.00u       0.00s       0.00w      1 call
+JK: (A|Q)^-1/2:       0.01u       0.00s       0.00w      1 call
+JK: (Q|mn)  :       0.00u       0.00s       0.00w      1 call
+Form H      :       0.00u       0.00s       0.00w      1 call
+Form S/X    :       0.00u       0.00s       0.00w      1 call
+Guess       :       0.00u       0.00s       0.00w      1 call
+Form G      :       0.00u       0.00s       0.00w      5 calls
+JK: D       :       0.00u       0.00s       0.00w      5 calls
+JK: USO2AO  :       0.00u       0.00s       0.00w      5 calls
+JK: JK      :       0.00u       0.00s       0.00w      5 calls
+JK: J       :       0.00u       0.00s       0.00w      5 calls
+JK: J1      :       0.00u       0.00s       0.00w      5 calls
+JK: J2      :       0.00u       0.00s       0.00w      5 calls
+JK: K       :       0.00u       0.00s       0.00w      5 calls
+JK: K1      :       0.00u       0.00s       0.00w      5 calls
+JK: K2      :       0.00u       0.00s       0.00w      5 calls
+JK: AO2USO  :       0.00u       0.00s       0.00w      5 calls
+Form F      :       0.00u       0.00s       0.00w      5 calls
+DIIS        :       0.00u       0.00s       0.00w      5 calls
+DIISManager::add_entry:       0.00u       0.00s       0.00w      5 calls
+Form C      :       0.00u       0.00s       0.00w      5 calls
+Form D      :       0.00u       0.00s       0.00w      5 calls
+DIISManager::extrapolate:       0.00u       0.00s       0.00w      4 calls
+DIISManager::extrapolate: bMatrix setup:       0.00u       0.00s       0.00w      4 calls
+DIISManager::extrapolate: bMatrix pseudoinverse:       0.00u       0.00s       0.00w      4 calls
+DIISManager::extrapolate: form new data:       0.00u       0.00s       0.00w      4 calls
+
+***********************************************************
+
+Host: ludger-InfinityBook13V3
+
+Timers On : Sun Oct 29 12:26:50 2017
+Timers Off: Sun Oct 29 12:26:50 2017
+
+Wall Time:        0.00 seconds
+
+JK: (A|mn)  :       0.00u       0.00s       0.00w      1 call
+JK: (A|Q)^-1/2:       0.00u       0.00s       0.00w      1 call
+JK: (Q|mn)  :       0.00u       0.00s       0.00w      1 call
+Form H      :       0.00u       0.00s       0.00w      1 call
+Form S/X    :       0.00u       0.00s       0.00w      1 call
+Guess       :       0.00u       0.00s       0.00w      1 call
+Form G      :       0.00u       0.00s       0.00w      8 calls
+JK: D       :       0.00u       0.00s       0.00w      8 calls
+JK: USO2AO  :       0.00u       0.00s       0.00w      5 calls
+JK: JK      :       0.00u       0.00s       0.00w      8 calls
+JK: J       :       0.00u       0.00s       0.00w      5 calls
+JK: J1      :       0.00u       0.00s       0.00w      5 calls
+JK: J2      :       0.00u       0.00s       0.00w      5 calls
+JK: K       :       0.00u       0.00s       0.00w      5 calls
+JK: K1      :       0.00u       0.00s       0.00w      5 calls
+JK: K2      :       0.00u       0.00s       0.00w      5 calls
+JK: AO2USO  :       0.00u       0.00s       0.00w      5 calls
+Form F      :       0.00u       0.00s       0.00w      8 calls
+DIIS        :       0.00u       0.00s       0.00w      8 calls
+DIISManager::add_entry:       0.00u       0.00s       0.00w      8 calls
+Form C      :       0.00u       0.00s       0.00w      8 calls
+Form D      :       0.00u       0.00s       0.00w      8 calls
+DIISManager::extrapolate:       0.00u       0.00s       0.00w      7 calls
+DIISManager::extrapolate: bMatrix setup:       0.00u       0.00s       0.00w      7 calls
+DIISManager::extrapolate: bMatrix pseudoinverse:       0.00u       0.00s       0.00w      7 calls
+DIISManager::extrapolate: form new data:       0.00u       0.00s       0.00w      7 calls
+
+***********************************************************
