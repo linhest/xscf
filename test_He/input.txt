@@ -18,7 +18,7 @@ charge=0
 
 #basis_set=STO-3G.gbs
 #basis_set=6-311G.gbs
-basis_set=6-31G.gbs
+basis_set=basis_set/6-31G.gbs
 #mem=1000M
 #numberofstates=100
 geom=(

@@ -1,6 +1,7 @@
 #include <iostream>
 #include "molecule.h"
 #include "basis_set.h"
+#include "diis.h"
 #include "scf.h"
 
 using namespace std;

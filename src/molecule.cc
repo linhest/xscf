@@ -13,6 +13,12 @@ extern const char  atom_labels[][4];
 
 #define MAXLINELENGTH 2000
 molecule::molecule(char filename[]){
+
+  // default values
+  energy_conv=1e-8;
+  density_conv=1e-8;
+  n_diis=8;
+
   ifstream fin;
   fin.open(filename);
   if(!fin.good()) {
@@ -136,7 +142,10 @@ molecule::molecule(char filename[]){
       }
       G_list.empty();
       label_list.empty();
-      
+    }else if(strcasecmp(token,"energy_conv")==0){
+      energy_conv=parse_float(token2);
+    }else if(strcasecmp(token,"density_conv")==0){
+      density_conv=parse_float(token2);
     }else{      
       throw std::invalid_argument( strcat(token," not recognized") );      
     }// check token
@@ -193,6 +202,14 @@ int molecule::parse_int(char * string){
   ss << string;
   ss>>n;
   return(n);
+}
+
+double molecule::parse_float(char * string){
+  double f;
+  stringstream ss;
+  ss << string;
+  ss>>f;
+  return(f);
 }
 
 vector<char *>* molecule::parse_string_array(char * buf, const char delim=','){

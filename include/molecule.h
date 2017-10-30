@@ -23,10 +23,16 @@ class molecule {
   int nelec;
   int charge; // total charge
 
+  double energy_conv;
+  double density_conv;
+  int n_diis; // dimension of diis space
+
   unsigned int * occ; // occupation of MOs
  private:
   void read_basis();
   int parse_int(char * string);
+  double parse_float(char * string);
+
   vector<char *>* parse_string_array(char * string, char delim);
   unsigned int * parse_int_array_fixed_len(unsigned int * s,  int nmo, char * buf, char delim);
   int * parse_int_array_fixed_len(int * s,  int nmo, char * buf, char delim);

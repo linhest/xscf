@@ -5,15 +5,19 @@
 #include <cmath>
 #include "molecule.h"
 #include "basis_set.h"
+#include "diis.h"
 #include "matrix.h"
+
 #include "scf.h"
 using namespace std;
 
 
 
-scf::scf(const molecule &arg_mol, const basis_set &arg_b) :
-		mol(arg_mol), b(arg_b) {
-	cout << "Entering SCF" << endl;
+scf::scf(const molecule &mol, const basis_set &b) :
+  mol(mol),
+  b(b),
+  diis(mol.n_diis,b.nbf*b.nbf){
+	cout << "# Entering SCF" << endl;
 	h0 = new double[b.nbf * b.nbf];
 	f = new double[b.nbf * b.nbf];
 	c = new double[b.nbf * b.nbf];
@@ -28,26 +32,27 @@ scf::scf(const molecule &arg_mol, const basis_set &arg_b) :
 		dmat[i]=0.;
 		c[i]=0.;
 	}
-	double old_energy=0.;
-	for(int it=0;it<40;it++){
+
+	energy=0.;
+	for(it=0;it<40;it++){
+	  old_energy=energy;
+
+	  construct_dmat(dmat, c, mol.occ);
 
 	  construct_fmat(f, h0, dmat, b.teint);
-	  print_iteration();
-	  for (int i = 0; i < b.nbf * b.nbf; i++){
-	    temp[i]=f[i];
-	  }
+
+	  for (int i = 0; i < b.nbf * b.nbf; i++)temp[i]=f[i];
 	  transform(temp, b.olap_inv_sqrt, b.nbf);
 	  eigval(temp, oe, b.nbf);
 	  mmult(b.olap_inv_sqrt, temp, c, b.nbf);
 	  
-	  construct_dmat(dmat, c, mol.occ);
-	  
 	  energy=total_energy(dmat,h0, f);
-	  if((energy-old_energy)*(energy-old_energy) < 1e-8 && it >2)break;
+	  print_iteration();
+
+	  if(fabs(energy-old_energy) < mol.energy_conv && it >1)break;
 	}
 
-	
-	
+
 	delete[] fold;
 	delete[] temp;
 }
@@ -80,7 +85,7 @@ int scf::print_iteration() {
 	double * temp=new double[b.nbf*b.nbf];
 	double * temp2=new double[b.nbf*b.nbf];
 
-	printf("# Energy %e\n",energy);
+	printf("# Iteration %d: Energy=%e Delta E=%e\n",it,energy,energy-old_energy);
 
 	printf("# %10s","MO index:");
 	for (int j = 0; j < b.nbf; j++) {
