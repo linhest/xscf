@@ -17,6 +17,9 @@ int dgemm_(char *transa, char *transb, int *m, int *
 int dgemv_(char *trans, int *m, int *n, double *
 	alpha, double *a, int *lda, double *x, int *incx,
 	double *beta, double *y, int *incy);
+int dgesv_( int* n, int* nrhs, double* a, int* lda, int* ipiv,
+                double* b, int* ldb, int * info);
+
 double ddot_(int *n, double *dx, int *incx, double *dy, int *incy);
 }
 using namespace std;
@@ -58,7 +61,7 @@ void mmult(double *a,double *b,double * c,int n){
 	dgemm_(&transa,&transb,&n,&n,&n,&alpha,a,&n,b,&n,&beta,c,&n);//c=a*b
 }
 
-
+// calculate eigenvectors + eigenvalues of real symmetric matrix of dimension m
 int eigval(double * a, double * eval, int m){
 	int n,lwork,info;
 	n=m;
@@ -84,4 +87,37 @@ int eigval(double * a, double * eval, int m){
 		throw std::invalid_argument( text );
 	}
 	return((int)info);
+}
+
+int solve_AxB(double * a, double *b, double * d, int n){
+  int * ipiv=new int[n];
+  int nrhs=1;
+  int info;
+  double * c=new double[n*n];
+  for(int i=0;i<n*n;i++)c[i]=a[i];
+  for(int i=0;i<n;i++)d[i]=b[i];
+  dgesv_( &n, &nrhs, c, &n, ipiv,d, &n, &info );
+  delete[] ipiv;
+  delete[] c;
+  return(info);
+}
+
+
+double trace(double *m, int n){
+  double t=0.;
+  for(int i=0;i<n;i++)
+      t+=m[i*n+i];
+  return(t);
+}
+
+
+void print_matrix(double *m, int n, char * description){
+  printf("Matrix %s:\n",description);
+  for(int i=0;i<n;i++){
+    for(int j=0;j<n;j++){
+      printf("%f ",m[j*n+i]);
+    }
+    printf("\n");
+  }
+
 }

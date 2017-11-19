@@ -1,13 +1,17 @@
-#include <iostream>
-#include <iomanip>
-#include <fstream>
-#include <sstream>
-#include <cstring>
-#include <cmath>
 
-#include "matrix.h"
-#include "molecule.h"
-#include "basis_set.h"
+
+#include <cmath>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <stdexcept>
+#include "../include/molecule.h"
+
+#include "../include/basis_set.h"
+#include "../include/matrix.h"
+
 using namespace std;
 
 extern "C" {
@@ -32,6 +36,13 @@ basis_set::~basis_set() {
   delete[] atm;
   delete[] bas;
   delete[] env;
+  delete[] first_bf_of_shell;
+  delete[] shells_on_atom;
+  delete[] olap;
+  delete[] kin;
+  delete[] nuc;
+  delete[] teint;
+  delete[] olap_inv_sqrt;
 }
 basis_set::basis_set(molecule & mol) {
   char * filename = mol.get_basis_set();
@@ -170,8 +181,9 @@ int basis_set::read_basis_set_atom(char * filename, char * atm_label,
 					  strcat(buf, "exp scoef pcoef"));
 	    if (bas != NULL && env != NULL) {
 	      env[*off] = exp;
-	      env[*off + nexp] = coef;
-	      env[*off + 2 * nexp] = pcoef;
+	      env[*off + nexp] = coef* CINTgto_norm(0,exp);
+	      env[*off + 2 * nexp] = pcoef* CINTgto_norm(1,exp);
+
 	    }
 	    (*off)++;
 	  }
@@ -187,25 +199,7 @@ int basis_set::read_basis_set_atom(char * filename, char * atm_label,
     }
   }
   fin.close();
-  // Normalize the basis
-  /*
-  if (bas != NULL && env != NULL) {
-    int sh;
-    int shls[2];
-    for (sh = 0; sh < (*n); sh++) {
-      int nl = 2 * bas[ANG_OF + BAS_SLOTS * sh] + 1;
-      double * buf = new double[nl * nl];
-      shls[0] = sh;
-      shls[1] = sh;
-      cint1e_ovlp_sph(buf, shls, atm, natm, bas, nbas, env);
-      for(int i=0;i< bas[NPRIM_OF + BAS_SLOTS * sh];i++){
-	env[bas[PTR_COEFF + BAS_SLOTS * sh]+i ] /= sqrt(buf[0]);
-      }
-      delete[] buf;
-    }
-  }
-  */
-	
+
   return (*n);
 }
 
@@ -392,6 +386,8 @@ double * basis_set::inv_sqrt(double * M) {
       }
     }
   }
+  delete[] eval;
+  delete[] V;
   return (M2);
 }
 

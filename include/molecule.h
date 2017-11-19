@@ -2,7 +2,7 @@
 #include <iostream>
 using namespace std;
 
-#define LEN_BASIS_SET 20
+#define LEN_BASIS_SET 100
 
 class molecule {
  public:
@@ -28,6 +28,10 @@ class molecule {
   int n_diis; // dimension of diis space
 
   unsigned int * occ; // occupation of MOs
+
+  double Enuc; // nuclear repulsion energy
+
+  int print; // print level
  private:
   void read_basis();
   int parse_int(char * string);
@@ -55,3 +59,6 @@ class molecule {
   long int mem; // number of doubles to be allocated to store everything (if = -1 we look investigate how much we need automatically)
   unsigned int * refs;
 };
+
+
+static double calculate_Enuc(double * geom, int * Z, int natm);

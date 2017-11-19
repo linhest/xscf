@@ -1,0 +1,18 @@
+#! ADC/6-31G** on H2O
+
+memory 250 mb
+
+molecule Ne {
+    Ne
+    symmetry c1
+}
+
+set {
+    reference rhf
+    basis 6-31G
+    guess core
+    print 5
+    SCF_TYPE PK
+}
+
+energy('scf')

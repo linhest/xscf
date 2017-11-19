@@ -1,12 +1,14 @@
 #include <cstring>
 #include <iostream>
+#include <deque>
 
 #include <stdio.h>
 #include <cmath>
-#include "molecule.h"
-#include "basis_set.h"
 #include "diis.h"
 #include "matrix.h"
+#include "molecule.h"
+
+#include "basis_set.h"
 
 #include "scf.h"
 using namespace std;
@@ -18,10 +20,12 @@ scf::scf(const molecule &mol, const basis_set &b) :
   b(b),
   diis(mol.n_diis,b.nbf*b.nbf){
 	cout << "# Entering SCF" << endl;
+
 	h0 = new double[b.nbf * b.nbf];
 	f = new double[b.nbf * b.nbf];
 	c = new double[b.nbf * b.nbf];
 	dmat = new double[b.nbf * b.nbf];
+	dmat_old = new double[b.nbf * b.nbf];
 	oe = new double[b.nbf];
 
 	double * temp = new double[b.nbf * b.nbf];
@@ -32,26 +36,62 @@ scf::scf(const molecule &mol, const basis_set &b) :
 		dmat[i]=0.;
 		c[i]=0.;
 	}
+	if(mol.print>2)
+	  print_matrix(h0,b.nbf,(char *)"H0 Matrix");
+
 
 	energy=0.;
 	for(it=0;it<40;it++){
 	  old_energy=energy;
 
+	  for (int i = 0; i < b.nbf * b.nbf; i++)dmat_old[i]=dmat[i];
 	  construct_dmat(dmat, c, mol.occ);
 
+	  if(mol.print>2)
+	    print_matrix(dmat,b.nbf,(char *)"D Matrix");
+
 	  construct_fmat(f, h0, dmat, b.teint);
+
+
+
+
+	  // DIIS Interpolation
+	  if(it>0  && mol.n_diis>0 ){
+	    double * err = new double[b.nbf*b.nbf];
+	    diis_error(dmat, f, err);
+	    diis.diis_interpolate (err, f);
+	    delete[] err;
+	  }
 
 	  for (int i = 0; i < b.nbf * b.nbf; i++)temp[i]=f[i];
 	  transform(temp, b.olap_inv_sqrt, b.nbf);
 	  eigval(temp, oe, b.nbf);
 	  mmult(b.olap_inv_sqrt, temp, c, b.nbf);
-	  
-	  energy=total_energy(dmat,h0, f);
+
+
+	  energy=total_energy(dmat,h0, f)+mol.Enuc;
+	  max_dmat_diff=0.;
+	  for(int i=0;i<b.nbf*b.nbf;i++)
+	    if(max_dmat_diff < fabs(dmat[i]-dmat_old[i]))
+	      max_dmat_diff=fabs(dmat[i]-dmat_old[i]);
+
 	  print_iteration();
 
-	  if(fabs(energy-old_energy) < mol.energy_conv && it >1)break;
+
+	  if( it >1
+	      && fabs(energy-old_energy) < mol.energy_conv
+	      && max_dmat_diff < mol.density_conv)
+	    break;
+
 	}
 
+	if( it >1
+	    && fabs(energy-old_energy) < mol.energy_conv
+	    && max_dmat_diff < mol.density_conv){
+	    print_result();
+	}else{
+	    printf("CONVERGENCE FAILED\n");
+	}
 
 	delete[] fold;
 	delete[] temp;
@@ -66,6 +106,32 @@ scf::~scf() {
 	delete[] f;
 }
 
+double scf::diis_error(double * dmat, double *f, double * err){
+  int n=b.nbf;
+
+  double * fd = new double[n*n];
+  double * fds = new double[n*n];
+  mmult(f, dmat, fd, n);
+  mmult(fd,b.olap, fds, n);
+
+
+  double * sd = new double[n*n];
+  double * sdf = new double[n*n];
+  mmult(b.olap, dmat, sd, n);
+  mmult(sd, f, sdf, n);
+
+  double t=0.;
+  for(int i=0;i<n*n;i++){
+      if(err!=NULL)err[i]=sdf[i]-fds[i];
+      if(fabs(sdf[i]-fds[i])>t)t=fabs(sdf[i]-fds[i]);
+  }
+
+  delete[] sd;
+  delete[] sdf;
+  delete[] fd;
+  delete[] fds;
+  return(t);
+}
 
 double scf::total_energy(double * dmat,double * h0, double * f) const{
   double * h0d=new double[b.nbf*b.nbf];
@@ -82,127 +148,65 @@ double scf::total_energy(double * dmat,double * h0, double * f) const{
 }
 
 int scf::print_iteration() {
-	double * temp=new double[b.nbf*b.nbf];
-	double * temp2=new double[b.nbf*b.nbf];
+	if(it==0)
+	  printf("# %5s %15s %15s %15s %15s\n",
+		 "Iter",
+		 "Energy",
+		 "Energy diff",
+		 "Density diff",
+		 "max |FDS-SDF|");
 
-	printf("# Iteration %d: Energy=%e Delta E=%e\n",it,energy,energy-old_energy);
+	printf("# %5d %15.5e %15.5e %15.5e %15.5e\n",
+	       it,
+	       energy,
+	       energy-old_energy,
+	       max_dmat_diff,
+	       diis_error(dmat, f, NULL));
+	if(mol.print>1){
+	    printf("# %10s","MO index:");
+	    for (int j = 0; j < b.nbf; j++) {
+		printf(" %10d ", j);
+	    }
+	    printf("\n");
+	    printf("# %10s","orb. E:");
+	    for (int j = 0; j < b.nbf; j++) {
+		printf(" %10.5f ", oe[j]);
+	    }
+	    printf("\n");
+	}
+}
 
+
+int scf::print_result() {
+
+	printf("# Results:\n# Energy=%f \n# Delta E=%e Delta D=%e DIIS Error=%e\n",energy,
+	       energy-old_energy,
+	       max_dmat_diff,
+	       diis_error(dmat, f, NULL));
 	printf("# %10s","MO index:");
 	for (int j = 0; j < b.nbf; j++) {
-		printf(" %10d ", j);
+	    printf(" %10d ", j);
 	}
 	printf("\n");
 	printf("# %10s","orb. E:");
 	for (int j = 0; j < b.nbf; j++) {
-		printf(" %10.5f ", oe[j]);
+	    printf(" %10.4f ", oe[j]);
 	}
 	printf("\n");
-	//	printf("%10s","norm:");
-	//	for (int j = 0; j < b.nbf; j++) {
-	//		printf(" %10.7f ", norm(c + j * b.nbf, b.olap, b.nbf));
-	//	}
-	//	printf("\n");
 
-	/*
 	for (int i = 0; i < b.nbf; i++) {
-		printf("%4s%5d:","bf",i);
+		printf("# %4s%5d:","bf",i);
 
 		for (int j = 0; j < b.nbf; j++) {
-			printf(" %10.5f ", c[j * b.nbf + i]);
+			printf(" %10.7f ", c[j * b.nbf + i]);
 		}
 		printf("\n");
 	}
-	printf("f\n");
-	for (int i = 0; i < b.nbf; i++) {
-		printf("%4s%5d:","bf",i);
-		for (int j = 0; j < b.nbf; j++) {
-			printf(" %10.5f ", f[j * b.nbf + i]);
-		}
-		printf("\n");
-	}
-	
-	
-	printf("h0\n");
-	for (int i = 0; i < b.nbf; i++) {
-		printf("%4s%5d:","bf",i);
-		for (int j = 0; j < b.nbf; j++) {
-			printf(" %10.5f ", h0[j * b.nbf + i]);
-		}
-		printf("\n");
-	}
-
-	printf("c\n");
-	for (int i = 0; i < b.nbf; i++) {
-		printf("%4s%5d:","bf",i);
-		for (int j = 0; j < b.nbf; j++) {
-			printf(" %10.5f ", c[j * b.nbf + i]);
-		}
-		printf("\n");
-	}
-
-	printf("Dmat\n");
-	for (int i = 0; i < b.nbf; i++) {
-		printf("%4s%5d:","bf",i);
-		for (int j = 0; j < b.nbf; j++) {
-			printf(" %10.5f ", dmat[j * b.nbf + i]);
-		}
-		printf("\n");
-	}
-	*/
-	/*	mmult(dmat, b.olap, temp, b.nbf);
-	double trace=0.;
-	for (int i = 0; i < b.nbf; i++) {
-		trace+=temp[i*b.nbf+i];
-	}
-	printf("Tr Dmat*S=%f\n",trace);
-
-	for (int i = 0; i < b.nbf*b.nbf; i++) temp2[i]=0;
-
-	mmult(temp, dmat, temp2, b.nbf);
-	printf("0.5*Dmat*S*0.5*Dmat-0.5 Dmat\n");
-	for (int i = 0; i < b.nbf; i++) {
-		printf("%4s%5d:","bf",i);
-		for (int j = 0; j < b.nbf; j++) {
-			printf(" %10.5f ", 0.25*temp2[j * b.nbf + i]-0.5*dmat[j * b.nbf + i]);
-		}
-		printf("\n");
-	}
-
-	*/
-	/*
-	for (int i = 0; i < b.nbf*b.nbf; i++) temp[i]=f[i];
-	transform(temp, c, b.nbf);
-	printf("Fmat\n");
-	for (int i = 0; i < b.nbf; i++) {
-		for (int j = 0; j < b.nbf; j++) {
-			printf(" %10.5f ", temp[j * b.nbf + i]);
-		}
-		printf("\n");
-	}
-
-
-	for (int i = 0; i < b.nbf*b.nbf; i++) temp[i]=h0[i];
-	transform(temp, c, b.nbf);
-	printf("H0mat\n");
-	for (int i = 0; i < b.nbf; i++) {
-		for (int j = 0; j < b.nbf; j++) {
-			printf(" %10.5f ", temp[j * b.nbf + i]);
-		}
-		printf("\n");
-	}
-
-
-	
-	*/
-
-
-	delete[] temp;
-
 }
 
 int scf::construct_dmat(double * dmat, double * c, const unsigned int * occ) {
 	for (int mu = 0; mu < b.nbf; mu++) {
-		for (int nu = 0; nu < b.nbf; nu++) {
+		for (int nu = mu; nu < b.nbf; nu++) {
 			dmat[mu * b.nbf + nu] = 0.;
 			for (int k = 0; k < b.nbf; k++) {
 				dmat[mu * b.nbf + nu] += 0.5*occ[k] * c[k * b.nbf + mu] * c[k * b.nbf + nu];
@@ -321,77 +325,66 @@ void scf::construct_fmat(double * f,double * h0, double * dmat, double * teint) 
   int il, jk;
   int iljk;
   /*
-    for(int i=0;i<n;i++) {
+  for(int i=0;i<n;i++) {
     for (int j = 0; j <= i; j++) {
-    ij = j + i * (i - 1) / 2;
-    for (int k = 0; k < n; k++) {
-    for (int l = 0; l <= k; l++) {
-    kl = l + k * (k - 1) / 2;
-    if (ij < kl)
-    continue;
-    ijkl = kl + ij * (ij - 1) / 2;
-    double t = teint[ijkl];
+      ij=b.packed_index(i,j);
+      for (int k = 0; k < n; k++) {
+	for (int l = 0; l <= k; l++) {
+	  kl=b.packed_index(k,l);
+	  if (ij < kl)
+	    continue;
+	  ijkl=b.packed_index(ij,kl);
+	  double t = teint[ijkl];
     
-    if (i == j && k == l && i == k) {
-    // 4 indices equal
-    contribution_4ind(i, n, t, f, dmat);
-    } else if (i == j && j == k) {
-    // 3 indices equal i,j,k
-    contribution_3ind(i, l, n, t, f, dmat);
-    } else if (i == k && j == l) {
-    // 3 indices equal i,j,l
-    contribution_3ind(i, k, n, t, f, dmat);
-    } else if (i == k && k == l) {
-    // 3 indices equal i,k,l
-    contribution_3ind(i, j, n, t, f, dmat);
-    } else if (i == j && k == l) {
-    // two indices pairwise equal ij and kl
-    contribution_2indpairA(i, k, n, t, f, dmat);
-    } else if (i == k && j == l) {
-    // two indices pairwise equal ik and jl
-    contribution_2indpairB(i, j, n, t, f, dmat);
-    } else if (i == j) {
-    // two indices  equal i=j
-    contribution_2indA(i, k, l, n, t, f, dmat);
-    } else if (k == l) {
-    // two indices  equal k=l
-    contribution_2indA(k, i, j, n, t, f, dmat);
-    } else if (i == k) {
-    // two indices  equal i=k
-    contribution_2indB(i, j, l, n, t, f, dmat);
-    } else if (j == l) {
-    // two indices  equal j=l
-    contribution_2indB(j, i, k, n, t, f, dmat);
-    } else {
-    contribution_noind(i, j, k, l, n, t, f, dmat);
-    }//if
-    }//l
-    }//k
+	  if (i == j && k == l && i == k) {
+	    // 4 indices equal
+	    contribution_4ind(i, n, t, f, dmat);
+	  } else if (i == j && j == k) {
+	    // 3 indices equal i,j,k
+	    contribution_3ind(i, l, n, t, f, dmat);
+	  } else if (i == k && j == l) {
+	    // 3 indices equal i,j,l
+	    contribution_3ind(i, k, n, t, f, dmat);
+	  } else if (i == k && k == l) {
+	    // 3 indices equal i,k,l
+	    contribution_3ind(i, j, n, t, f, dmat);
+	  } else if (i == j && k == l) {
+	    // two indices pairwise equal ij and kl
+	    contribution_2indpairA(i, k, n, t, f, dmat);
+	  } else if (i == k && j == l) {
+	    // two indices pairwise equal ik and jl
+	    contribution_2indpairB(i, j, n, t, f, dmat);
+	  } else if (i == j) {
+	    // two indices  equal i=j
+	    contribution_2indA(i, k, l, n, t, f, dmat);
+	  } else if (k == l) {
+	    // two indices  equal k=l
+	    contribution_2indA(k, i, j, n, t, f, dmat);
+	  } else if (i == k) {
+	    // two indices  equal i=k
+	    contribution_2indB(i, j, l, n, t, f, dmat);
+	  } else if (j == l) {
+	    // two indices  equal j=l
+	    contribution_2indB(j, i, k, n, t, f, dmat);
+	  } else {
+	    contribution_noind(i, j, k, l, n, t, f, dmat);
+	  }//if
+	}//l
+      }//k
     }//j
-    }//i
+  }//i
   */
+ 
   for (int i = 0; i < n; i++){
     for (int j = 0; j < n ; j++){
-      if(i<j){ij = j + i * (i + 1)/ 2;}
-      else{ij = i + j * (j + 1)/2;}
+
       ij=b.packed_index(i,j);
       
       for (int k = 0; k < n ; k++){
 	for (int l = 0; l < n ; l++){
-	  if(k>l){kl = l + k * (k + 1) / 2;}
-	  else{kl = l + l * (l + 1) / 2;}
 	  kl=b.packed_index(k,l);
-	  if(i<l){il = l + i * (i + 1) / 2;}
-	  else{il = i + l * (l + 1) / 2;}
 	  il=b.packed_index(i,l);
-	  if(k<j){jk = j + k * (k + 1) / 2;}
-	  else{jk = k + j * (j + 1) / 2;}
 	  jk=b.packed_index(j,k);
-	  
-	  if(kl<ij){ijkl = ij + kl * (kl + 1) / 2;}
-	  else{ijkl = kl + ij * (ij + 1) / 2;}
-	  if(il<jk){iljk = jk + il * (il + 1) / 2;}
-	  else{iljk = il + jk * (jk + 1) / 2;}
 	  ijkl=b.packed_index(ij,kl);
 	  iljk=b.packed_index(il,jk);
 	  
@@ -411,5 +404,5 @@ void scf::construct_fmat(double * f,double * h0, double * dmat, double * teint) 
       }
     }
   }
-	
+
 }

@@ -2,7 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <cstring>
-
+#include <cmath>
 #include <vector>
 
 #include "molecule.h"
@@ -18,6 +18,8 @@ molecule::molecule(char filename[]){
   energy_conv=1e-8;
   density_conv=1e-8;
   n_diis=8;
+
+  print=0;
 
   ifstream fin;
   fin.open(filename);
@@ -51,6 +53,8 @@ molecule::molecule(char filename[]){
     if(token2==NULL)continue;
     if(strcasecmp(token,"nref")==0){
       nref=parse_int(token2);
+    }else if(strcasecmp(token,"print")==0){
+        print=parse_int(token2);
     }else if(strcasecmp(token,"basis_set")==0){
       strncpy(basis_set,token2,LEN_BASIS_SET);
     }else if(strcasecmp(token,"exlevels")==0){
@@ -136,6 +140,8 @@ molecule::molecule(char filename[]){
 	geom[i*3+1]=G_list[i][1];
 	geom[i*3+2]=G_list[i][2];
 	atm_label[i]=label_list[i];
+	delete[] G_list[i];
+
 	for(int j=0;j<N_ATOM_LABELS;j++){
 	  if(strncasecmp(atm_label[i],atom_labels[j],4)==0) Z[i]=j;
 	}
@@ -152,11 +158,21 @@ molecule::molecule(char filename[]){
   }//!feof
   fin.close();
     
+  Enuc=calculate_Enuc(geom,Z,natm);
+
 }// initialize
 
 
 molecule::~molecule(){
+  for(int i=0;i<natm;i++){
+      delete[] atm_label[i];
+  }
+  delete[] atm_label;
   delete[] refs;
+  delete[] Z;
+  delete[] geom;
+  delete[] occ;
+
 }
 
 ostream& operator<< (ostream &out, const molecule & mol){
@@ -175,6 +191,9 @@ ostream& operator<< (ostream &out, const molecule & mol){
 	   mol.geom[i*3+1],
 	   mol.geom[i*3+2]);
   }
+  out << "#Enuc=" << mol.Enuc << endl;
+
+
   out << "#References=" << endl;
   for(i=0;i<mol.nref;i++){
     out << "#"<< i << ":" ;
@@ -196,6 +215,7 @@ int  molecule::get_natm(){
   return(natm);
 }
 
+
 int molecule::parse_int(char * string){
   int n;
   stringstream ss;
@@ -203,6 +223,7 @@ int molecule::parse_int(char * string){
   ss>>n;
   return(n);
 }
+
 
 double molecule::parse_float(char * string){
   double f;
@@ -252,5 +273,21 @@ int * molecule::parse_int_array_fixed_len(int * s,  int nmo, char * buf, const c
 }
 
 
+static double calculate_Enuc(double * geom, int * Z, int natm){
+  double E=0.;
+  for(int i=0;i<natm;i++){
+      for(int j=i+1;j<natm;j++){
+	  double dx=(geom[i*3+0]-geom[j*3+0]);
+	  double dy=(geom[i*3+1]-geom[j*3+1]);
+	  double dz=(geom[i*3+2]-geom[j*3+2]);
+
+	  double dist=sqrt(dx*dx+dy*dy+dz*dz);
+	  cout << i <<" "<< j <<" " << dist << endl;
+
+	  E=E+Z[i]*Z[j]/dist;
+      }
+  }
+  return(E);
+}
 
 				    

@@ -1,0 +1,21 @@
+#! ADC/6-31G** on H2O
+
+memory 250 mb
+
+molecule h2o {
+O       0.0000 	 0.000    0.222
+H       0.0000 	 1.431 	 -0.887
+H       0.0000 	-1.431   -0.887
+units au
+symmetry c1
+}
+
+set {
+    reference rhf
+    basis 6-31G
+    guess core
+    print 5
+    SCF_TYPE PK
+}
+
+energy('scf')
