@@ -20,6 +20,8 @@ molecule::molecule(char filename[]){
   n_diis=8;
 
   print=0;
+  filename_guess_save[0]='\0';
+  filename_guess_read[0]='\0';
 
   ifstream fin;
   fin.open(filename);
@@ -56,7 +58,11 @@ molecule::molecule(char filename[]){
     }else if(strcasecmp(token,"print")==0){
         print=parse_int(token2);
     }else if(strcasecmp(token,"basis_set")==0){
-      strncpy(basis_set,token2,LEN_BASIS_SET);
+      strncpy(basis_set,token2,LEN_FILENAME);
+    }else if(strcasecmp(token,"guess_save")==0){
+      strncpy(filename_guess_save,token2,LEN_FILENAME);
+    }else if(strcasecmp(token,"guess_read")==0){
+      strncpy(filename_guess_read,token2,LEN_FILENAME);
     }else if(strcasecmp(token,"exlevels")==0){
       exlevels=parse_int(token2);
     }else if(strcasecmp(token,"occ")==0){

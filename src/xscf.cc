@@ -34,5 +34,8 @@ int main(int argc, char ** argv){
   }
 
   scf S(mol,basis);
+  if(mol.filename_guess_save[0]!='\0')
+    S.save_guess(mol.filename_guess_save);
+
 
 }

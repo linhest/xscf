@@ -1,5 +1,6 @@
 #include <cstring>
 #include <iostream>
+#include <fstream>
 #include <deque>
 
 #include <stdio.h>
@@ -39,6 +40,8 @@ scf::scf(const molecule &mol, const basis_set &b) :
 	if(mol.print>2)
 	  print_matrix(h0,b.nbf,(char *)"H0 Matrix");
 
+	if(mol.filename_guess_read[0]!='\0')
+	  read_guess(mol.filename_guess_read);
 
 	energy=0.;
 	for(it=0;it<40;it++){
@@ -155,13 +158,13 @@ int scf::print_iteration() {
 		 "Energy diff",
 		 "Density diff",
 		 "max |FDS-SDF|");
-
-	printf("# %5d %15.5e %15.5e %15.5e %15.5e\n",
-	       it,
-	       energy,
-	       energy-old_energy,
-	       max_dmat_diff,
-	       diis_error(dmat, f, NULL));
+	else
+	  printf("# %5d %15.5e %15.5e %15.5e %15.5e\n",
+		 it,
+		 energy,
+		 energy-old_energy,
+		 max_dmat_diff,
+		 diis_error(dmat, f, NULL));
 	if(mol.print>1){
 	    printf("# %10s","MO index:");
 	    for (int j = 0; j < b.nbf; j++) {
@@ -203,6 +206,28 @@ int scf::print_result() {
 		printf("\n");
 	}
 }
+
+int scf::save_guess(const char * filename){
+  printf("saving to %s\n",filename);
+  fstream fout(filename,ios::out|ios::binary|ios::trunc);
+  if (!fout.good())
+    throw std::invalid_argument(" cannot write ");
+  fout.write((char *)c,sizeof(double)*b.nbf*b.nbf);
+  fout.close();
+  return(0);
+}
+
+int scf::read_guess(const char * filename){
+  printf("reading from %s\n",filename);
+  fstream fin(filename,ios::in|ios::binary);
+  if (!fin.good())
+    throw std::invalid_argument(" cannot read ");
+  fin.read((char *)c,sizeof(double)*b.nbf*b.nbf);
+  fin.close();
+  return(0);
+}
+
+
 
 int scf::construct_dmat(double * dmat, double * c, const unsigned int * occ) {
 	for (int mu = 0; mu < b.nbf; mu++) {

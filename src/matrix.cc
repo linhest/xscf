@@ -80,7 +80,6 @@ int eigval(double * a, double * eval, int m){
 		char text[100];
 		sprintf(text,"argument %d",-info);
 		throw std::invalid_argument( text );
-		printf("%s\n",text);
 	}else if(info>0){
 		char text[100];
 		sprintf(text,"convergence %d",info);

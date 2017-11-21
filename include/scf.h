@@ -4,10 +4,12 @@ class scf {
  public:
   scf(const molecule &arg_mol, const basis_set &arg_b);
   ~scf();
-
+  int save_guess(const char * filename);
  private:
   int print_iteration();
   int print_result();
+
+  int read_guess(const char * filename);
 
   double total_energy(double * dmat,double * h0, double * f) const;
   double diis_error(double * dmat, double *f, double * err);

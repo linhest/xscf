@@ -2,7 +2,7 @@
 #include <iostream>
 using namespace std;
 
-#define LEN_BASIS_SET 100
+#define LEN_FILENAME 100
 
 class molecule {
  public:
@@ -17,7 +17,7 @@ class molecule {
   double * geom; // geometry of atoms
   int * Z;// Z of atoms
   char ** atm_label;
-  char basis_set[LEN_BASIS_SET];
+  char basis_set[LEN_FILENAME];
   int nmo;// Number of orbitals
   int ms2;
   int nelec;
@@ -32,6 +32,9 @@ class molecule {
   double Enuc; // nuclear repulsion energy
 
   int print; // print level
+  char filename_guess_save[LEN_FILENAME];
+  char filename_guess_read[LEN_FILENAME];
+
  private:
   void read_basis();
   int parse_int(char * string);
