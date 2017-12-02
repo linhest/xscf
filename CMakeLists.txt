@@ -1,3 +1,4 @@
+
 cmake_minimum_required (VERSION 2.6)
 project (xscf)
 find_package( BLAS REQUIRED )
@@ -7,7 +8,16 @@ include_directories(${BLAS_INCLUDE_DIR})
 set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/bin)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
-set(CMAKE_BUILD_TYPE Debug)
+
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif()
+
+#set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
+
 include_directories(include)
 file(GLOB SOURCES "src/*.cc")
 add_executable(xscf ${SOURCES})

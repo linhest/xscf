@@ -1,9 +1,16 @@
 
-# valences ionized states. references all valence vacancies, single excitations in the valence state
-nmo=13
+
+nmo=58
+#basis_set=STO-3G.gbs
+#basis_set=6-311G.gbs
+#basis_set=basis_set/6-311G.gbs
+#basis_set=basis_set/6-311++G_star_star.gbs
+basis_set=basis_set/cc-pVTZ.gbs
+#basis_set=basis_set/STO-3G.gbs
+#basis_set=basis_set/cc-pVQZ.gbs
+
 nref=1
-ref=\
-2,2,2,2,2,0,0,0
+ref=2,2,2,2,2,0,0
 
 exlevels=4
 #endorbital=0,8,0,0
@@ -15,10 +22,7 @@ exlevels=4
 
 occ=2,2,2,2,2
 charge=0
-
-#basis_set=STO-3G.gbs
-#basis_set=6-311G.gbs
-basis_set=basis_set/6-31G.gbs
+#print=3
 #mem=1000M
 #numberofstates=100
 geom=(
@@ -27,3 +31,9 @@ H       0.0000 	 1.431 	 -0.887
 H       0.0000 	-1.431   -0.887
 )
 
+#O       0.0000 	 0.000    0.222
+#H       0.0000 	 1.431 	 -0.887
+#H       0.0000 	-1.431   -0.887
+
+#guess_save=guess.dat
+#guess_read=guess.dat

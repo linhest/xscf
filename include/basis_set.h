@@ -1,17 +1,26 @@
-
-class basis_set{
+/*
+ * basis_set.h
+ * written by Ludger Inhester
+ * (c) 2017
+ * 02.12.2017
+ *
+ */
+class basis_set {
 public:
-  basis_set(molecule & mol);
-  ~basis_set();
-  friend ostream& operator<< (ostream &out, const basis_set &b);
-  int packed_index(int i,int j) const;
-  
+  basis_set (const molecule & mol);
+  ~basis_set ();
+  friend ostream&
+  operator<< (ostream &out, const basis_set &b);
+  int
+  packed_index (int i, int j) const;
+
+  const molecule & mol;
+
   double * teint;
   double * kin;
   double * olap;
   double * nuc;
   double * olap_inv_sqrt;
-
 
   int natm;
   int nbas;
@@ -23,16 +32,22 @@ public:
   int nbf;
   int lmax;
 private:
-  int read_basis_set_atom(char * filename, char * atm_label, double * env, int * bas, int atom_of, int *off, int *n);
+  int
+  read_basis_set_atom (const char * filename, char * atm_label, double * env,
+                       int * bas, int atom_of, int *off, int *n);
 
-  double * calc_olap();
-  double * calc_kin();
-  double * calc_nuc();
-  double * calc_teint();
-  double * inv_sqrt(double * M);
+  double *
+  calc_olap ();
+  double *
+  calc_kin ();
+  double *
+  calc_nuc ();
+  double *
+  calc_teint ();
+  double *
+  inv_sqrt (double * M);
 
-
-  
 };
 
-int symlabel2ang(char s);
+int
+symlabel2ang (char s);
