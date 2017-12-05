@@ -1,22 +1,22 @@
 # xscf
-Scf program bassed on libcint.
-This project is a small leightwieght electronic structure code that currently performs restricted open shell hartree fock 
-calculations for molecules.
+Scf program based on the libcint library.
+This project is a small leightweight electronic structure code that currently is only able to perform restricted open shell hartree fock calculations for molecules.
 Future plans are:
-Address open inner-shells, relevant for X-ray absorption.
+Address open inner-shells that are relevant for X-ray absorption.
 
+#Building instructions
 to build the code you need 
--cmake
--lapack/blas library
+*cmake
+*a lapack and blas library
 
-Building instructions
-
+to build the code, follow these steps:
+```
 mkdir build
 cd build 
 cmake ..
 make
-
-
+```
+#Usage
 to run the code you need an input file that contains
 
  * Specification of the molecular geometry:
