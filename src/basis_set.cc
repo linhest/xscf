@@ -17,6 +17,7 @@
 #include "../include/basis_set.h"
 #include "../include/matrix.h"
 
+#include <cstdlib>
 using namespace std;
 
 extern "C" {
@@ -101,11 +102,12 @@ basis_set::basis_set (const molecule & mol) : mol (mol) {
     nbf += 2 * l + 1;
   }
 
-  if (nbf != mol.nmo) {
+  /*  if (nbf != mol.nmo) {
     char text[100];
     sprintf (text, "nmo should be %d", nbf);
     throw ::std::invalid_argument (text);
   }
+  */
 
   // normalize basis functions
   if (bas != NULL) {
@@ -279,6 +281,7 @@ basis_set::calc_olap () {
   int sh1, sh2;
   int n1, n2;
   double * olap = new double[nbf * nbf];
+  memset(olap, 0, nbf*nbf*sizeof(double));
   int shls[2];
   for (sh1 = 0; sh1 < nbas; sh1++) {
     n1 = 2 * bas[ANG_OF + BAS_SLOTS * sh1] + 1;
@@ -310,6 +313,7 @@ basis_set::calc_kin () {
   int sh1, sh2;
   int n1, n2;
   double * kin = new double[nbf * nbf];
+  memset(kin, 0, nbf*nbf*sizeof(double));
   int shls[2];
   for (sh1 = 0; sh1 < nbas; sh1++) {
     int l1 = bas[ANG_OF + BAS_SLOTS * sh1];
@@ -343,6 +347,7 @@ basis_set::calc_nuc () {
   int sh1, sh2;
   int n1, n2;
   double * nuc = new double[nbf * nbf];
+  memset(nuc, 0, nbf*nbf*sizeof(double));
   int shls[2];
   for (sh1 = 0; sh1 < nbas; sh1++) {
     int l1 = bas[ANG_OF + BAS_SLOTS * sh1];
@@ -378,6 +383,7 @@ basis_set::calc_teint () {
   int nij = nbf * (nbf + 1) / 2;
   int nijkl = nij * (nij + 1) / 2;
   double * teint = new double[nijkl];
+  memset(teint, 0, nijkl*sizeof(double));
   int shls[4];
   CINTOpt *opt = NULL;
   cint2e_sph_optimizer (&opt, atm, natm, bas, nbas, env);

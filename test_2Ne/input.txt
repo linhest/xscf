@@ -1,5 +1,6 @@
 
 # valences ionized states. references all valence vacancies, single excitations in the valence state
+
 nref=1
 ref=\
 2,2,2,2,2,0,0,0
@@ -12,15 +13,17 @@ exlevels=4
 #spinl=0.75
 #spinm=0.5
 
-occ=2,0,0,0
+occ=2,2,2,2,2,2,2,2,2,2,0
 charge=0
 
 #basis_set=STO-3G.gbs
-basis_set=basis_set/6-311G.gbs
+#basis_set=6-311G.gbs
 #basis_set=basis_set/6-31G.gbs
+basis_set=basis_set/cc-pVTZ.gbs
 #mem=1000M
 #numberofstates=100
 geom=(
-He 0.0 0.0 0.0
+Ne       0.0000 	 0.000    0.000
+Ne       0.0000 	 0.000    10.000
 )
-#H 1.0 0.0 0.0
+

@@ -1,9 +1,8 @@
 
 # valences ionized states. references all valence vacancies, single excitations in the valence state
-nmo=8
 nref=1
 ref=\
-2,2,2,2,2,0,0,0
+2,2,2,2,2,0,0,0,0
 
 exlevels=4
 #endorbital=0,8,0,0
@@ -13,7 +12,7 @@ exlevels=4
 #spinl=0.75
 #spinm=0.5
 
-occ=2,2,2,2,2,0
+occ=2,2,2,2,2,0,0,0,0
 charge=0
 
 #basis_set=STO-3G.gbs

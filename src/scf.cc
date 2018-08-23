@@ -38,6 +38,19 @@ scf::scf (const molecule &mol, const basis_set &b) :
   double * temp = new double[b.nbf * b.nbf];
   double * fold = new double[b.nbf * b.nbf];
 
+  occ=new unsigned int[b.nbf];
+  for (int i = 0; i < mol.locc && i<b.nbf; i++)
+    occ[i]=mol.occ[i];
+  for (int i=mol.locc; i < b.nbf; i++)
+    occ[i]=0;
+
+  if (mol.print > 2){
+    printf("occ= ");
+    for (int i = 0; i < b.nbf; i++)
+      printf("%d ",occ[i]);
+    printf("\n");
+  }
+    
   for (int i = 0; i < b.nbf * b.nbf; i++) {
     h0[i] = b.nuc[i] + b.kin[i];
     dmat[i] = 0.;
@@ -55,7 +68,8 @@ scf::scf (const molecule &mol, const basis_set &b) :
 
     for (int i = 0; i < b.nbf * b.nbf; i++)
       dmat_old[i] = dmat[i];
-    construct_dmat (dmat, c, mol.occ);
+
+    construct_dmat (dmat, c, occ);
 
     if (mol.print > 2)
       print_matrix (dmat, b.nbf, (char *) "D Matrix");
@@ -97,6 +111,7 @@ scf::scf (const molecule &mol, const basis_set &b) :
 }
 
 scf::~scf () {
+  delete[] occ;
   delete[] c;
   delete[] dmat;
   delete[] oe;
@@ -190,7 +205,7 @@ scf::print_result () {
   printf ("# Molecular orbitals:\n");
   printf ("# %8s %8s %15s\n", "MO", "occ", "energy");
   for (int i = 0; i < b.nbf; i++) {
-    printf ("# %8d %8d %15.5f\n", i, mol.occ[i], oe[i]);
+    printf ("# %8d %8d %15.5f\n", i, occ[i], oe[i]);
   }
   printf ("# Results:\n# Energy=%f \n# Delta E=%e Delta D=%e DIIS Error=%e\n",
           energy, energy - old_energy, max_dmat_diff,

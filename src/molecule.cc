@@ -67,23 +67,25 @@ molecule::molecule (char filename[]) {
     } else if (strcasecmp (token, "exlevels") == 0) {
       exlevels = parse_int (token2);
     } else if (strcasecmp (token, "occ") == 0) {
-      occ = new unsigned int[nmo];
-      parse_int_array_fixed_len (occ, nmo, token2, ',');
+      locc=count_entries(token2, ',');
+      occ = new unsigned int[locc];
+      parse_int_array_fixed_len (occ, locc, token2, ',');
     } else if (strcasecmp (token, "charge") == 0) {
       charge = parse_int (token2);
     } else if (strcasecmp (token, "sym") == 0) {
       target_sym = parse_int (token2);
-    } else if (strcasecmp (token, "nmo") == 0) {
-      nmo = parse_int (token2);
+    }  else if (strcasecmp (token, "nmo") == 0) {
+      //      nmo = parse_int (token2);
     } else if (strcasecmp (token, "ref") == 0) {
-      vector<char *>* list = parse_string_array (token2, ';');
-      nref = list->size ();
-      refs = new unsigned int[nref * nmo];
-      int i;
-      for (i = 0; i < nref; i++) {
-        parse_int_array_fixed_len (&refs[i * nmo], nmo, (*list)[i], ',');
-      }
-      delete list;
+      // vector<char *>* list = parse_string_array (token2, ';');
+      // nref = list->size ();
+      // int n=count_entries((*list)[0], ',');
+      // refs = new unsigned int[nref * n];
+      // int i;
+      // for (i = 0; i < nref; i++) {
+      //   parse_int_array_fixed_len (&refs[i * n], n, (*list)[i], ',');
+      // }
+      // delete list;
     } else if (strcasecmp (token, "geom") == 0) {
       char * ptr_start = token2;
       l = strlen (token) + strlen (token2);
@@ -177,7 +179,7 @@ molecule::~molecule () {
     delete[] atm_label[i];
   }
   delete[] atm_label;
-  delete[] refs;
+  //  delete[] refs;
   delete[] Z;
   delete[] geom;
   delete[] occ;
@@ -186,8 +188,8 @@ molecule::~molecule () {
 
 ostream&
 operator<< (ostream &out, const molecule & mol) {
-  int i, j;
-  out << "#nmo=" << mol.nmo << endl;
+  int i;
+  //  out << "#nmo=" << mol.nmo << endl;
   out << "#ms2=" << mol.ms2 << endl;
   out << "#nref=" << mol.nref << endl;
   out << "#basis_set=" << mol.basis_set << endl;
@@ -198,17 +200,17 @@ operator<< (ostream &out, const molecule & mol) {
   }
   out << "#Enuc=" << mol.Enuc << endl;
 
-  out << "#References=" << endl;
-  for (i = 0; i < mol.nref; i++) {
-    out << "#" << i << ":";
-    for (j = 0; j < mol.nmo; j++) {
-      out << mol.refs[i * mol.nmo + j];
-      if (j < mol.nmo - 1) {
-        out << ",";
-      }
-    }
-    out << endl;
-  }
+  // out << "#References=" << endl;
+  // for (i = 0; i < mol.nref; i++) {
+  //   out << "#" << i << ":";
+  //   for (j = 0; j < mol.nmo; j++) {
+  //     out << mol.refs[i * mol.nmo + j];
+  //     if (j < mol.nmo - 1) {
+  //       out << ",";
+  //     }
+  //   }
+  //   out << endl;
+  // }
   return (out);
 }
 
@@ -247,35 +249,44 @@ molecule::parse_string_array (char * buf, const char delim = ',') {
 }
 
 unsigned int *
-molecule::parse_int_array_fixed_len (unsigned int * s, int nmo, char * buf,
+molecule::parse_int_array_fixed_len (unsigned int * s, int n, char * buf,
                                      const char delim = ',') {
   char * token;
   int i;
-  for (i = 0, token = strtok (buf, &delim); token != NULL && i < nmo; token =
+  for (i = 0, token = strtok (buf, &delim); token != NULL && i < n; token =
       strtok (NULL, &delim), i++) {
     s[i] = parse_int (token);
   }
-  if (i == nmo && token != NULL)
+  if (i == n && token != NULL)
     throw std::invalid_argument ("array too long");
-  for (; i < nmo; i++) {
+  for (; i < n; i++) {
     s[i] = 0;
   }
 
   return (s);
 }
 
+int molecule::count_entries (char * buf, const char delim = ',') {
+  int i;
+  char * ptr;
+  for (i = 1, ptr = strchr (buf, (int)delim); ptr != NULL; i++){
+    ptr=strchr(ptr+1,(int)delim);
+  }
+  return(i);
+}
+
 int *
-molecule::parse_int_array_fixed_len (int * s, int nmo, char * buf,
+molecule::parse_int_array_fixed_len (int * s, int n, char * buf,
                                      const char delim = ',') {
   char * token;
   int i;
-  for (i = 0, token = strtok (buf, &delim); token != NULL && i < nmo; token =
+  for (i = 0, token = strtok (buf, &delim); token != NULL && i < n; token =
       strtok (NULL, &delim), i++) {
     s[i] = parse_int (token);
   }
-  if (i == nmo && token != NULL)
+  if (i == n && token != NULL)
     throw std::invalid_argument ("array too long");
-  for (; i < nmo; i++) {
+  for (; i < n; i++) {
     s[i] = 0;
   }
   return (s);

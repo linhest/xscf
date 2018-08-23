@@ -25,7 +25,6 @@ public:
   int * Z; // Z of atoms
   char ** atm_label;
   char basis_set[LEN_FILENAME];
-  int nmo; // Number of orbitals
   int ms2;
   int nelec;
   int charge; // total charge
@@ -35,6 +34,7 @@ public:
   int n_diis; // dimension of diis space
 
   unsigned int * occ; // occupation of MOs
+  int locc; // len of occ string
 
   double Enuc; // nuclear repulsion energy
 
@@ -53,10 +53,11 @@ private:
   vector<char *>*
   parse_string_array (char * string, char delim);
   unsigned int *
-  parse_int_array_fixed_len (unsigned int * s, int nmo, char * buf, char delim);
+  parse_int_array_fixed_len (unsigned int * s, int n, char * buf, char delim);
   int *
   parse_int_array_fixed_len (int * s, int nmo, char * buf, char delim);
-
+  int count_entries (char * buf, const char delim);
+  
   int nref; // number of reference occupations
   int exlevels; // number of excitaion levels
   int * endorbital; // array of orbital indices: maximum orbital index per excitation level

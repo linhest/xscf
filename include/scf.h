@@ -39,7 +39,7 @@ private:
   double * c;
   double * dmat;
   double * dmat_old;
-
+  unsigned int * occ;
   double * oe;
   double * h0;
   double * f;

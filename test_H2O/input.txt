@@ -1,6 +1,6 @@
 
 
-nmo=58
+
 #basis_set=STO-3G.gbs
 #basis_set=6-311G.gbs
 #basis_set=basis_set/6-311G.gbs
@@ -9,8 +9,8 @@ basis_set=basis_set/cc-pVTZ.gbs
 #basis_set=basis_set/STO-3G.gbs
 #basis_set=basis_set/cc-pVQZ.gbs
 
-nref=1
-ref=2,2,2,2,2,0,0
+#nref=1
+#ref=2,2,2,2,2,0,0
 
 exlevels=4
 #endorbital=0,8,0,0
@@ -20,7 +20,7 @@ exlevels=4
 #spinl=0.75
 #spinm=0.5
 
-occ=2,2,2,2,2
+occ=2,2,2,2,2,0,0,0,0,0,0
 charge=0
 #print=3
 #mem=1000M
