@@ -15,6 +15,7 @@ mkdir build
 cd build 
 cmake ..
 make
+make test
 ```
 # Usage
 to run the code you need an input file that contains
