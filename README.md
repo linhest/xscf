@@ -36,13 +36,6 @@ to run the code you need an input file that contains
   where basis_set_file contains the specification of the basis set (Gaussian format).
   There are some basis sets specifications in subdirectory basis_set/
 
- * Specifications of the number of basis functions:
-  ```
-  nmo=x
-  ```
-  where x is the number of basis functions.
-  If x is not correct the program will abort.
-
  * Specifications of the occupation of the molecular orbitals.
   This is a comma seperated list containing either 2 (occupied) or 0 (unoccupied)
   e.g.
